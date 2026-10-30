@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>助成金サイト 画面案</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<style>
+/* Layout concept: 叩き台ビューア(画面・配色案の切替)の中に、ポータル型の実サイトを置く。
+   別AIが作成した検索結果画面(紺+橙、左に絞り込み、4指標のカード)を基準に、4画面へ展開した。
+   案A=紺+橙(参考HTMLの配色)、案B=ティール+琥珀(前案)。 */
+:root {
+  --chrome-bg: #E4EAF3; --chrome-fg: #111C2D; --chrome-line: #C2C9D6;
+  --bg: #F9F9FF; --card: #FFFFFF; --soft: #F0F3FF; --soft2: #E7EEFF; --soft3: #DEE8FF;
+  --fg: #111C2D; --muted: #42474F; --outline: #737780; --line: #D3DCEF;
+  --ok-bg: #004C32; --ok-fg: #6FFBBE; --ok-tint: #C9F9E4; --ok-tint-ink: #002113; --ok-text: #004C32;
+  --danger: #BA1A1A; --danger-ink: #FFFFFF; --danger-tint: #FFDAD6;
+  /* plan A: 紺 + 橙 */
+  --brand: #002D53; --brand-ink: #FFFFFF; --brand-2: #0B4375; --tint: #D3E4FF; --tint-ink: #14487A;
+  --cta: #A73B00; --cta-ink: #FFFFFF; --cta-tint: #FFDBCE; --cta-tint-ink: #7F2B00;
+  --hero-a: #0B4375; --hero-b: #002D53; --hero-fg: #FFFFFF; --hero-muted: #C6DAF5;
+  --radius: 8px; --radius-lg: 12px;
+  --font: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+}
+:root[data-plan="b"] {
+  --brand: #0F4C5C; --brand-ink: #FFFFFF; --brand-2: #17687B; --tint: #D9ECE9; --tint-ink: #0F4C5C;
+  --cta: #9A5600; --cta-ink: #FFFFFF; --cta-tint: #FBEBCB; --cta-tint-ink: #6B3B00;
+  --hero-a: #17687B; --hero-b: #0F4C5C; --hero-muted: #CBE3DF;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --chrome-bg: #070E18; --chrome-fg: #E6EDF8; --chrome-line: #243349;
+    --bg: #0D1726; --card: #14233A; --soft: #192B46; --soft2: #20365A; --soft3: #284470;
+    --fg: #E6EDF8; --muted: #A9B8CC; --outline: #8393AB; --line: #2A3F5F;
+    --ok-bg: #0F5C40; --ok-fg: #BFF7DE; --ok-tint: #123D2E; --ok-tint-ink: #B7F0D5; --ok-text: #BFF7DE;
+    --danger: #FFB4AB; --danger-ink: #3A0B07; --danger-tint: #5A1D17;
+    --brand: #A2C9FF; --brand-ink: #0B1C30; --brand-2: #86B1E9; --tint: #1D3A5F; --tint-ink: #CFE1FF;
+    --cta: #FE6B27; --cta-ink: #2B0A00; --cta-tint: #4A2412; --cta-tint-ink: #FFDBCE;
+    --hero-a: #123F6B; --hero-b: #0B2745; --hero-muted: #C6DAF5;
+    color-scheme: dark;
+  }
+  :root[data-plan="b"]:not([data-theme="light"]) {
+    --brand: #4CC1B0; --brand-ink: #0B1A1F; --brand-2: #7AD6C9; --tint: #1B4A4D; --tint-ink: #C9EFE9;
+    --cta: #E9A23B; --cta-ink: #1B2A32; --cta-tint: #3A2E17; --cta-tint-ink: #F0CD8C;
+    --hero-a: #17687B; --hero-b: #0F4C5C;
+  }
+}
+:root[data-theme="dark"] {
+  --chrome-bg: #070E18; --chrome-fg: #E6EDF8; --chrome-line: #243349;
+  --bg: #0D1726; --card: #14233A; --soft: #192B46; --soft2: #20365A; --soft3: #284470;
+  --fg: #E6EDF8; --muted: #A9B8CC; --outline: #8393AB; --line: #2A3F5F;
+  --ok-bg: #0F5C40; --ok-fg: #BFF7DE; --ok-tint: #123D2E; --ok-tint-ink: #B7F0D5; --ok-text: #BFF7DE;
+  --danger: #FFB4AB; --danger-ink: #3A0B07; --danger-tint: #5A1D17;
+  --brand: #A2C9FF; --brand-ink: #0B1C30; --brand-2: #86B1E9; --tint: #1D3A5F; --tint-ink: #CFE1FF;
+  --cta: #FE6B27; --cta-ink: #2B0A00; --cta-tint: #4A2412; --cta-tint-ink: #FFDBCE;
+  --hero-a: #123F6B; --hero-b: #0B2745; --hero-muted: #C6DAF5;
+  color-scheme: dark;
+}
+:root[data-theme="dark"][data-plan="b"] {
+  --brand: #4CC1B0; --brand-ink: #0B1A1F; --brand-2: #7AD6C9; --tint: #1B4A4D; --tint-ink: #C9EFE9;
+  --cta: #E9A23B; --cta-ink: #1B2A32; --cta-tint: #3A2E17; --cta-tint-ink: #F0CD8C;
+  --hero-a: #17687B; --hero-b: #0F4C5C;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--chrome-bg); color: var(--chrome-fg); font-family: var(--font); line-height: 1.7;
+  padding-block: 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1240px; margin: 0 auto; }
+h1, h2, h3, h4, p { margin: 0; text-wrap: balance; }
+button, input, select { font-family: inherit; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--cta); outline-offset: 2px; }
+.ms { font-family: "Material Symbols Outlined"; font-weight: 400; font-style: normal; font-size: 20px; line-height: 1; display: inline-block; letter-spacing: normal; text-transform: none; white-space: nowrap; direction: ltr; font-feature-settings: "liga"; -webkit-font-smoothing: antialiased; flex: none; vertical-align: middle; user-select: none; }
+.ms.fill { font-variation-settings: "FILL" 1; }
+
+/* viewer chrome */
+.viewer-head { padding-block: 22px 14px; display: grid; gap: 14px; }
+.viewer-head h1 { font-size: 20px; font-weight: 900; }
+.viewer-head p { font-size: 14px; color: var(--chrome-fg); opacity: .75; max-width: 64em; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--card); border: 1px solid var(--chrome-line); border-radius: 10px; color: var(--fg); }
+.seg button { border: 0; background: var(--clear); color: var(--fg); padding: 8px 16px; border-radius: 7px; font-size: 14px; font-weight: 500; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--brand); color: var(--brand-ink); font-weight: 700; }
+.ctl-label { font-size: 13px; opacity: .7; margin-right: 8px; }
+.frame { border: 1px solid var(--chrome-line); border-radius: 12px; overflow: hidden; background: var(--bg); color: var(--fg); }
+.bar { display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: var(--soft2); border-bottom: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.dots { display: flex; gap: 5px; } .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--line); display: block; }
+.url { flex: 1; min-width: 0; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 2px 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* site base */
+.site { font-size: 15px; background: var(--bg); }
+.inner { padding-inline: 28px; max-width: 1200px; margin-inline: auto; }
+.sample { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 10px; border-radius: 999px; background: var(--cta-tint); color: var(--cta-tint-ink); vertical-align: middle; white-space: nowrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; background: var(--brand); color: var(--brand-ink); height: 44px; padding: 0 20px; border-radius: var(--radius); font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none; white-space: nowrap; }
+.btn:hover { background: var(--brand-2); color: var(--brand-ink); }
+.btn.soft { background: var(--soft2); color: var(--brand); }
+.btn.soft:hover { background: var(--soft3); color: var(--brand); }
+.btn.cta { background: var(--cta); color: var(--cta-ink); }
+.btn.cta:hover { filter: brightness(1.12); color: var(--cta-ink); }
+.btn.sm { height: 38px; padding: 0 14px; font-size: 14px; }
+.btn.block { width: 100%; }
+.btn .ms { font-size: 18px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; padding: 3px 12px; border-radius: 999px; white-space: nowrap; }
+.pill .ms { font-size: 16px; }
+.pill.urgent { background: var(--cta); color: var(--cta-ink); }
+.pill.danger { background: var(--danger); color: var(--danger-ink); }
+.pill.info { background: var(--tint); color: var(--tint-ink); }
+.pill.ok { background: var(--ok-bg); color: var(--ok-fg); }
+.pill.plain { background: var(--soft3); color: var(--brand); }
+.tag { display: inline-block; font-size: 13px; padding: 2px 10px; border-radius: 6px; background: var(--soft2); color: var(--muted); }
+.tag.org { background: var(--soft2); color: var(--brand); font-weight: 700; }
+.tag.kind { background: var(--tint); color: var(--tint-ink); font-weight: 700; }
+.tag.warn { background: var(--cta-tint); color: var(--cta-tint-ink); font-weight: 700; }
+
+/* header */
+.head-top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding-block: 14px; background: var(--card); }
+.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--brand); }
+.logo-mark { width: 42px; height: 42px; border-radius: var(--radius); background: var(--brand); color: var(--brand-ink); display: grid; place-items: center; font-weight: 900; font-size: 20px; }
+.logo b { display: block; font-size: 22px; font-weight: 900; line-height: 1.2; }
+.logo small { display: block; font-size: 12px; color: var(--muted); line-height: 1.3; }
+.hsearch { flex: 1; min-width: 260px; max-width: 560px; position: relative; display: flex; align-items: center; }
+.hsearch .ms { position: absolute; left: 12px; color: var(--outline); }
+.hsearch input { width: 100%; height: 44px; padding: 0 84px 0 42px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--soft); color: var(--fg); font-size: 15px; }
+.hsearch button { position: absolute; right: 5px; height: 34px; padding: 0 14px; border: 0; border-radius: 6px; background: var(--brand); color: var(--brand-ink); font-weight: 700; font-size: 14px; cursor: pointer; }
+.htools { display: flex; flex-wrap: wrap; gap: 8px; margin-left: auto; }
+.htool { height: 40px; padding: 0 12px; border: 0; border-radius: var(--radius); background: var(--soft2); color: var(--fg); font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.htool .ms { color: var(--brand); font-size: 18px; }
+.htool .count { min-width: 20px; height: 20px; border-radius: 999px; background: var(--cta); color: var(--cta-ink); font-size: 12px; display: inline-grid; place-items: center; padding: 0 5px; }
+.htool.main { background: var(--brand); color: var(--brand-ink); } .htool.main .ms { color: var(--brand-ink); }
+.gnav { background: var(--card); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.gnav .inner { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 20px; }
+.gnav nav { display: flex; flex-wrap: wrap; gap: 2px; }
+.gnav a { display: inline-flex; align-items: center; gap: 6px; padding: 12px 14px; font-size: 15px; font-weight: 700; color: var(--muted); text-decoration: none; border-bottom: 3px solid var(--clear); }
+.gnav a:hover { color: var(--brand); }
+.gnav a[aria-current="page"] { color: var(--brand); border-bottom-color: var(--brand); background: color-mix(in srgb, var(--tint) 45%, var(--clear)); }
+.gnav a .ms { font-size: 20px; }
+.gnav .live { font-size: 13px; color: var(--muted); display: flex; gap: 16px; align-items: center; }
+.gnav .live b { color: var(--ok-text); }
+
+.notice { background: var(--cta-tint); color: var(--cta-tint-ink); }
+.notice .inner { display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; padding-block: 10px; font-size: 14px; }
+.crumb-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; padding-block: 16px 14px; font-size: 13px; color: var(--muted); }
+.crumb-row a { text-decoration: none; } .crumb-row a:hover { color: var(--brand); }
+
+/* hero banner (diagnosis) */
+.banner { position: relative; overflow: hidden; border-radius: var(--radius-lg); background: linear-gradient(90deg, var(--hero-a), var(--hero-b)); color: var(--hero-fg); padding: 26px 28px; display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: center; justify-content: space-between; }
+.banner h2 { font-size: clamp(22px, 2.6vw, 28px); font-weight: 900; line-height: 1.45; max-width: 26em; }
+.banner p { color: var(--hero-muted); font-size: 15px; margin-top: 8px; max-width: 40em; }
+.banner .pill.ok { background: var(--badge-bg); color: var(--badge-ink); }
+.banner .row1 { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-bottom: 10px; font-size: 13px; color: var(--hero-muted); }
+.banner .mark { position: absolute; right: -30px; bottom: -50px; width: 230px; height: 230px; opacity: .1; pointer-events: none; }
+.banner > * { position: relative; z-index: 1; }
+.tiles { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-block: 18px 0; }
+.tile { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 18px; display: grid; gap: 6px; text-decoration: none; align-content: start; }
+.tile:hover { border-color: var(--brand); }
+.tile .ti { width: 46px; height: 46px; border-radius: var(--radius); background: var(--tint); color: var(--tint-ink); display: grid; place-items: center; margin-bottom: 4px; }
+.tile .ti .ms { font-size: 26px; }
+.tile b { font-size: 17px; line-height: 1.5; }
+.tile span.s { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.tile.main { background: var(--cta); color: var(--cta-ink); border-color: var(--cta); }
+.tile.main .ti { background: var(--tile-glass); color: var(--cta-ink); }
+.tile.main span.s { color: var(--cta-ink); opacity: .9; }
+
+section.block { padding-block: 34px 6px; }
+.sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; margin-bottom: 16px; }
+.sec-head h3 { font-size: 24px; font-weight: 900; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sec-head p { font-size: 14px; color: var(--muted); }
+.more { font-size: 14px; font-weight: 700; color: var(--brand); display: inline-flex; align-items: center; gap: 2px; }
+
+/* grant card (4 metric bento) */
+.gcard { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 20px; display: grid; gap: 14px; min-width: 0; }
+.gcard:hover { border-color: var(--brand-2); }
+.g-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 8px 14px; }
+.g-tags { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.gcard h3 { font-size: 19px; font-weight: 900; line-height: 1.55; }
+.gcard h3 a { text-decoration: none; } .gcard h3 a:hover { color: var(--brand); text-decoration: underline; }
+.g-sum { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.metrics { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+.metric small { display: block; font-size: 12px; color: var(--muted); font-weight: 500; }
+.metric .v { display: block; font-size: 14px; font-weight: 700; margin-top: 4px; line-height: 1.5; }
+.metric .big { font-size: 22px; font-weight: 900; color: var(--brand); font-variant-numeric: tabular-nums; line-height: 1.3; margin-top: 2px; display: block; }
+.metric .big em { font-style: normal; font-size: 13px; margin-left: 3px; }
+.metric .sub { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.metric .sub.hl { color: var(--cta); font-weight: 700; }
+.g-mid { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 14px; }
+.when { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; background: var(--soft2); padding: 6px 12px; border-radius: 6px; }
+.when .ms { font-size: 18px; color: var(--cta); }
+.when strong { color: var(--brand); }
+.when.red { background: var(--danger-tint); color: var(--danger); font-weight: 700; } .when.red .ms, .when.red strong { color: var(--danger); }
+.g-src { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 2px 14px; align-items: center; }
+.g-src .ms { font-size: 16px; color: var(--ok-text); }
+.g-act { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+.g-act .r { display: flex; flex-wrap: wrap; gap: 10px; }
+.save { border: 0; background: var(--soft); color: var(--muted); height: 38px; padding: 0 14px; border-radius: var(--radius); font-size: 14px; font-weight: 700; display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.save:hover { background: var(--soft2); color: var(--cta); }
+.save[aria-pressed="true"] { background: var(--cta-tint); color: var(--cta-tint-ink); }
+.save .ms { font-size: 18px; }
+.mini .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid3 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }
+
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--card); }
+table.sched { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 680px; }
+.sched th { background: var(--soft2); text-align: left; padding: 12px 16px; font-size: 14px; }
+.sched td { padding: 14px 16px; border-top: 1px solid var(--line); vertical-align: top; }
+.sched td:first-child { font-weight: 700; } .sched td.date { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sched a { color: var(--brand); }
+.steps3 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.step { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 22px; display: grid; gap: 8px; align-content: start; }
+.step .n { font-size: 13px; font-weight: 900; color: var(--cta); letter-spacing: .06em; }
+.step h4 { font-size: 20px; font-weight: 900; }
+.step ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: 15px; color: var(--muted); }
+.remind { background: var(--soft); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 22px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; }
+.remind .l { display: flex; gap: 16px; align-items: flex-start; flex: 1; min-width: 280px; }
+.remind .ico { width: 48px; height: 48px; border-radius: 50%; background: var(--cta-tint); color: var(--cta-tint-ink); display: grid; place-items: center; flex: none; }
+.remind .ico .ms { font-size: 26px; }
+.remind h4 { font-size: 17px; font-weight: 900; } .remind p { font-size: 14px; color: var(--muted); margin-top: 4px; }
+.remind form { display: flex; flex-wrap: wrap; gap: 8px; }
+.remind input { height: 44px; padding: 0 14px; width: 260px; max-width: 100%; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); color: var(--fg); font-size: 15px; }
+.two { display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.news { display: grid; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding-inline: 16px; }
+.news a { display: grid; grid-template-columns: auto auto 1fr; gap: 6px 12px; padding: 13px 0; border-bottom: 1px solid var(--line); text-decoration: none; font-size: 15px; align-items: baseline; }
+.news a:last-child { border-bottom: 0; }
+.news time { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 14px; }
+.news a:hover .t { text-decoration: underline; }
+.cta-band { background: linear-gradient(90deg, var(--hero-a), var(--hero-b)); color: var(--hero-fg); border-radius: var(--radius-lg); padding: 28px; display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; justify-content: space-between; }
+.cta-band h3 { font-size: 22px; font-weight: 900; max-width: 24em; } .cta-band p { color: var(--hero-muted); font-size: 15px; margin-top: 6px; }
+.site-foot { margin-top: 44px; border-top: 1px solid var(--line); background: var(--card); }
+.site-foot .inner { padding-block: 30px 34px; display: grid; gap: 22px; font-size: 14px; color: var(--muted); }
+.fcols { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+.fcols b { color: var(--fg); display: block; margin-bottom: 6px; }
+.fcols a { display: block; text-decoration: none; padding-block: 2px; } .fcols a:hover { color: var(--brand); }
+.legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; }
+
+/* results layout */
+.layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 22px; align-items: start; padding-bottom: 20px; }
+.filters { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 18px; display: grid; gap: 16px; position: sticky; top: 12px; }
+.f-head { display: flex; justify-content: space-between; align-items: center; padding-bottom: 12px; border-bottom: 1px solid var(--line); font-weight: 900; font-size: 16px; }
+.f-head span { display: inline-flex; gap: 6px; align-items: center; } .f-head .ms { color: var(--brand); }
+.f-head button { border: 0; background: none; color: var(--cta); font-size: 13px; font-weight: 700; cursor: pointer; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 6px 4px 10px; border-radius: 6px; background: var(--tint); color: var(--tint-ink); font-size: 13px; font-weight: 500; }
+.chip.hot { background: var(--cta-tint); color: var(--cta-tint-ink); font-weight: 700; }
+.chip button { border: 0; background: none; color: inherit; padding: 0; display: grid; cursor: pointer; } .chip .ms { font-size: 15px; }
+.fgroup { display: grid; gap: 8px; padding-top: 14px; border-top: 1px solid var(--line); }
+.fgroup h4 { font-size: 14px; font-weight: 900; }
+.fgroup label { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; cursor: pointer; line-height: 1.5; }
+.fgroup input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--brand); flex: none; }
+.fgroup .two2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.rescol { display: grid; gap: 16px; min-width: 0; }
+.ctrl { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 14px 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 16px; }
+.ctrl .cnt { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; font-size: 14px; color: var(--muted); }
+.ctrl .cnt b { font-size: 28px; font-weight: 900; color: var(--brand); line-height: 1; }
+.ctrl .opts { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 13px; color: var(--muted); }
+.ctrl select { height: 38px; padding: 0 10px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--soft); color: var(--fg); font-size: 14px; font-weight: 700; }
+.pager { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 16px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+.pager div { display: flex; gap: 6px; align-items: center; }
+.pager button { min-width: 38px; height: 38px; padding: 0 10px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--card); color: var(--fg); font-weight: 700; font-size: 14px; cursor: pointer; }
+.pager button[aria-current="page"] { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
+.pager button:disabled { opacity: .45; cursor: not-allowed; }
+
+/* detail */
+.detail { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 28px; padding-bottom: 20px; align-items: start; }
+.detail .main { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 26px; display: grid; gap: 14px; }
+.detail h2 { font-size: clamp(24px, 3vw, 30px); font-weight: 900; line-height: 1.5; }
+.facts { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.fact { background: var(--soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+.fact small { font-size: 13px; color: var(--muted); display: block; } .fact b { font-size: 19px; font-variant-numeric: tabular-nums; line-height: 1.5; color: var(--brand); }
+.doc h3 { font-size: 20px; font-weight: 900; margin: 18px 0 8px; display: flex; gap: 8px; align-items: center; } .doc h3 .ms { color: var(--brand); }
+.doc p, .doc li { font-size: 16px; } .doc ul { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.aside { display: grid; gap: 14px; align-content: start; position: sticky; top: 12px; }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 18px; display: grid; gap: 10px; }
+.panel h4 { font-size: 16px; font-weight: 900; display: flex; gap: 6px; align-items: center; } .panel h4 .ms { color: var(--brand); }
+.panel.tint { background: var(--tint); border-color: var(--clear); color: var(--tint-ink); } .panel.tint .note { color: var(--tint-ink); }
+.note { font-size: 14px; color: var(--muted); }
+.panel dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; font-size: 14px; } .panel dt { color: var(--muted); } .panel dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.panel dd a { color: var(--brand); }
+
+/* diagnosis */
+.wizard { max-width: 760px; margin-inline: auto; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 28px; display: grid; gap: 22px; margin-bottom: 20px; }
+.progress { display: grid; gap: 8px; font-size: 15px; font-weight: 700; }
+.progress .track { height: 10px; border-radius: 999px; background: var(--soft3); overflow: hidden; } .progress .fill { height: 100%; background: var(--brand); border-radius: 999px; }
+.q h3 { font-size: 26px; font-weight: 900; line-height: 1.5; }
+.choices { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 18px; }
+.choice { display: flex; gap: 12px; align-items: center; border: 2px solid var(--line); border-radius: var(--radius-lg); padding: 16px; font-size: 17px; font-weight: 700; cursor: pointer; background: var(--card); }
+.choice:has(input:checked) { border-color: var(--brand); background: var(--tint); color: var(--tint-ink); }
+.choice input { width: 22px; height: 22px; accent-color: var(--brand); margin: 0; flex: none; }
+.nav-row { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.result { display: grid; gap: 14px; } .result h3 { font-size: 24px; font-weight: 900; }
+.match { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 16px; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-lg); align-items: start; background: var(--soft); }
+.level { font-size: 14px; font-weight: 900; border-radius: var(--radius); padding: 4px 12px; background: var(--ok-bg); color: var(--ok-fg); white-space: nowrap; }
+.level.mid { background: var(--cta-tint); color: var(--cta-tint-ink); }
+.match b { font-size: 17px; line-height: 1.5; } .match small { grid-column: 2; font-size: 14px; color: var(--muted); }
+
+.notes { margin-block: 22px 44px; display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.notes section { display: grid; gap: 8px; align-content: start; }
+.notes h2 { font-size: 16px; font-weight: 900; } .notes ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; font-size: 14px; }
+
+@media (max-width: 980px) {
+  .layout, .detail { grid-template-columns: minmax(0, 1fr); }
+  .filters, .aside { position: static; }
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .htools { margin-left: 0; }
+}
+@media (max-width: 560px) {
+  .inner { padding-inline: 16px; }
+  .news a { grid-template-columns: auto 1fr; } .news a .tag { justify-self: start; }
+  .metrics { grid-template-columns: minmax(0, 1fr); }
+  .wizard { padding: 18px; }
+}
+@media (prefers-reduced-motion: no-preference) { .btn, .tile, .seg button, .choice, .save { transition: background-color .15s, border-color .15s, color .15s; } }
+
+/* v0.4: comparison, progressive disclosure and responsive controls */
+:root { --clear: transparent; --overlay: #09172699; --on-accent-hover: #FFFFFF; --badge-bg: #6FFBBE; --badge-ink: #002113; --tile-glass: #FFFFFF40; }
+html { font-size:14px; } body { font-size:14px; overflow-wrap:anywhere; }
+[hidden] { display:none !important; }
+button, select, summary, .btn, .btn.sm, .save, .htool { min-height:44px; min-width:44px; }
+button, input, select { font-size:14px; } button, summary { cursor:pointer; }
+.btn { height:auto; padding-block:10px; white-space:normal; text-align:center; }
+.btn:hover { color:var(--brand-ink); }
+.hsearch { min-width:0; } .hsearch input { height:48px; padding-right:78px; }
+.hsearch button { height:44px; right:2px; }
+.htool.main { background:var(--soft2); color:var(--fg); } .htool.main .ms { color:var(--brand); }
+.seg, .controls > div, .logo, .remind .l { min-width:0; max-width:100%; }
+.frame { overflow:clip; } .gcard { gap:12px; }
+.gcard .metrics { grid-template-columns:1.4fr 1fr .85fr 1.2fr; align-items:start; margin:0; }
+.metrics dt { font-size:12px; color:var(--muted); margin-bottom:6px; }
+.metrics dd { margin:0; font-size:14px; font-weight:700; }
+.metrics .amount { color:var(--brand); font-size:21px; font-weight:900; }
+.metrics .deadline { color:var(--cta-tint-ink); } .deadline-box { border-left:2px solid var(--cta); padding-left:12px; }
+.gcard .g-top { justify-content:flex-start; } .gcard .g-tags .tag.org { font-weight:500; }
+.gcard .g-act { padding-top:10px; } .card-link { color:var(--brand); font-weight:700; min-height:44px; display:inline-flex; align-items:center; gap:6px; padding:8px; }
+.gcard details, .glossary { font-size:14px; } summary { padding:10px 0; color:var(--brand); font-weight:700; }
+.gcard details p { margin:4px 0 10px; color:var(--muted); text-wrap:pretty; }
+.g-src { font-size:12px; gap:2px 12px; } .g-src span:first-child { flex-basis:100%; }
+.glossary { border:1px solid var(--line); border-radius:var(--radius); background:var(--card); padding:0 16px; margin-bottom:18px; }
+.glossary p { margin:8px 0 14px; text-wrap:pretty; }
+.filter-trigger, .drawer-close, .drawer-footer { display:none; }
+.filters { gap:10px; } .fgroup { border:0; border-top:1px solid var(--line); margin:0; padding:12px 0 0; min-width:0; }
+.fgroup legend { font-weight:700; padding:0 4px 0 0; } .fgroup label { min-height:44px; align-items:center; }
+.fgroup input { margin:0; } .filters select { width:100%; min-height:44px; background:var(--card); color:var(--fg); border:1px solid var(--outline); border-radius:var(--radius); padding:8px; }
+.chips { align-items:center; } .chip { padding:0 0 0 12px; font-size:14px; } .chip button { display:grid; place-items:center; }
+.applied { padding:0 2px; display:grid; gap:8px; } .applied p { font-size:14px; }
+.empty { background:var(--card); border:1px solid var(--line); border-radius:var(--radius-lg); padding:32px; display:grid; gap:14px; text-align:left; }
+.empty .ms { font-size:32px; color:var(--brand); } .empty h3 { font-size:22px; }
+.state-controls { display:flex; flex-wrap:wrap; gap:12px; align-items:center; font-size:14px; }
+.state-controls select { background:var(--card); color:var(--fg); border:1px solid var(--outline); border-radius:var(--radius); padding:8px; }
+[data-screen="results"] .banner { background:var(--soft2); color:var(--fg); padding:16px 20px; }
+[data-screen="results"] .banner h2 { font-size:19px; } [data-screen="results"] .banner p { color:var(--muted); margin-top:4px; }
+[data-screen="results"] .banner .row1 { display:none; } [data-screen="results"] .banner .mark { display:none; }
+[data-screen="results"] .banner .btn { background:var(--card); color:var(--brand); border:1px solid var(--line); }
+.site .remind .btn, [data-screen="top"] .cta-band .btn { background:var(--soft2); color:var(--brand); }
+.tile.main { background:var(--card); color:var(--fg); border-color:var(--line); } .tile.main .ti { background:var(--tint); color:var(--tint-ink); } .tile.main span.s { color:var(--muted); }
+.pager { padding-bottom:12px; } .result-summary { padding:12px; background:var(--soft); border-radius:var(--radius); }
+.site-foot a, .more { min-height:44px; display:inline-flex; align-items:center; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.skip { position:fixed; left:16px; top:-100px; z-index:20; background:var(--card); color:var(--brand); padding:12px; } .skip:focus { top:12px; }
+.dialog { border:1px solid var(--line); background:var(--card); color:var(--fg); border-radius:var(--radius-lg); max-width:min(520px, calc(100% - 32px)); padding:24px; font-family:var(--font); }
+.dialog::backdrop { background:var(--overlay); } .dialog p { margin:14px 0; } .dialog form { display:flex; justify-content:flex-end; }
+#filter-dialog { padding:0; width:min(400px, calc(100% - 16px)); max-width:none; max-height:100dvh; height:100dvh; margin:0 0 0 auto; border-radius:0; }
+#filter-dialog .filters { border:0; border-radius:0; position:static; } #filter-dialog .drawer-close, #filter-dialog .drawer-footer { display:flex; } .drawer-footer { position:sticky; bottom:0; background:var(--card); padding:12px 0; border-top:1px solid var(--line); }
+.f-head { flex-wrap:wrap; gap:8px; } .mini .metrics { grid-template-columns:1fr 1fr; } .mini .deadline-box { border-left:0; padding-left:0; }
+@media(max-width:1100px) { .layout { grid-template-columns:250px minmax(0,1fr); } .gcard .metrics { grid-template-columns:1fr 1fr; } }
+@media(max-width:980px) { .layout { grid-template-columns:minmax(0,1fr); } #filter-slot { display:none; } .filter-trigger { display:flex; } .detail { grid-template-columns:minmax(0,1fr); } }
+@media(max-width:560px) {
+ .inner { padding-inline:12px; } .viewer-head { padding-top:16px; } .viewer-head h1 { font-size:18px; }
+ .controls { gap:12px; } .ctl-label { display:block; margin-bottom:4px; } .seg { display:flex; } .seg button { padding:8px 10px; }
+ .head-top { gap:14px; } .logo b { font-size:20px; } .logo-mark { flex:none; } .hsearch { flex-basis:100%; max-width:100%; }
+ .htools { gap:4px; } .htool { padding-inline:8px; } .gnav nav { display:grid; grid-template-columns:1fr 1fr; width:100%; }
+ .gnav a { padding:10px 6px; font-size:14px; } .gnav .live { padding:8px 0; }
+ .banner { padding:20px 16px; } .banner h2 { font-size:22px; } .banner .btn { width:100%; }
+ .grid3, .two, .steps3, .tiles, .notes, .choices, .facts { grid-template-columns:minmax(0,1fr); }
+ .gcard { padding:16px; } .gcard h3 { font-size:18px; } .gcard .metrics { grid-template-columns:minmax(0,1fr); padding:12px; gap:12px; }
+ .metrics > div { border-bottom:1px solid var(--line); padding-bottom:10px; } .metrics > div:last-child { border-bottom:0; padding-bottom:0; }
+ .deadline-box { border-left:0; padding-left:0; } .g-act { gap:6px; } .save { padding-inline:10px; } .card-link { padding-inline:4px; }
+ .ctrl { padding:14px; } .ctrl .opts { width:100%; } .ctrl select { max-width:100%; min-height:44px; }
+ .remind { padding:16px; } .remind .l { min-width:0; } .remind form { width:100%; } .remind input { width:100%; }
+ .tablewrap { overflow:visible; } table.sched { min-width:0; display:block; } .sched thead { display:none; } .sched tbody, .sched tr, .sched td { display:block; } .sched tr { padding:12px; border-bottom:1px solid var(--line); } .sched td { border:0; padding:4px 0; } .sched td.date { white-space:normal; } .sched a { display:inline-flex; align-items:center; min-height:44px; }
+ .detail .main { padding:16px; } .detail h2 { font-size:23px; } .wizard { padding:16px; } .q h3 { font-size:22px; } .choice { font-size:16px; padding:12px; }
+ .match { grid-template-columns:1fr; } .match small { grid-column:1; } .empty { padding:22px; } .news a { grid-template-columns:1fr; } .site-foot .fcols { grid-template-columns:minmax(0,1fr); }
+}
+
+
+:root { --disabled-opacity:.5; } .btn:disabled { opacity:var(--disabled-opacity); cursor:not-allowed; } .q legend { font-size:24px; font-weight:900; } #results-heading { font-size:18px; } .hsearch button { background:var(--soft2); color:var(--brand); } .hsearch button.search-primary { background:var(--cta); color:var(--cta-ink); }
+
+.ms { width:20px; height:20px; display:inline-flex; overflow:hidden; } .ms svg { width:100%; height:100%; flex:none; } .amount-prefix { display:block; font-size:12px; font-weight:500; } .amount-unit { font-size:12px; white-space:nowrap; }
+</style>
+
+<a class="skip" href="#results-heading">検索結果へ移動</a>
+<div class="wrap">
+  <header class="viewer-head">
+    <h1>助成金・補助金まとめサイト 画面の叩き台 v0.4</h1>
+    <p>別のAIで作成された検索結果画面(紺と橙、左に絞り込み、4つの指標を並べたカード)を基準に、4画面へ広げました。制度名・金額・件数・日付はすべてサンプルで、実在の制度ではありません。</p>
+    <div class="controls">
+      <div><span class="ctl-label">画面</span>
+        <span class="seg" id="screens" role="group" aria-label="画面の切替">
+          <button type="button" data-view="results" aria-pressed="true">検索結果</button>
+          <button type="button" data-view="top" aria-pressed="false">トップ</button>
+          <button type="button" data-view="detail" aria-pressed="false">制度の詳細</button>
+          <button type="button" data-view="diagnosis" aria-pressed="false">組合員の診断</button>
+        </span></div>
+      <div><span class="ctl-label">配色案</span>
+        <span class="seg" id="plans" role="group" aria-label="配色案の切替">
+          <button type="button" data-plan="a" aria-pressed="true">案A 紺+橙</button>
+          <button type="button" data-plan="b" aria-pressed="false">案B ティール+琥珀</button>
+        </span></div>
+      <div class="state-controls"><label>表示モード <select id="theme-mode"><option value="auto">端末に合わせる</option><option value="light">ライト</option><option value="dark">ダーク</option></select></label><label>検索結果の状態 <select id="demo-state"><option value="normal">通常</option><option value="empty">0件の例</option><option value="error">取得エラーの例</option></select></label><span>【サンプル】操作・入力は送信されません</span></div>
+    </div>
+  </header>
+
+  <div class="frame">
+    <div class="bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="url" id="urlbar">https://(サイト名・ドメイン未定)/</span></div>
+    <div class="site">
+      <header>
+        <div style="background:var(--card)"><div class="inner head-top">
+          <a class="logo" href="#top" data-go="top"><span class="logo-mark" aria-hidden="true">助</span><span><b>サイト名(仮)</b><small>助成金・補助金まとめサイト / 運営: 株式会社メック</small></span></a>
+          <form class="hsearch"  role="search"><span class="ms" aria-hidden="true">search</span><input type="search" aria-label="キーワード検索" placeholder="制度名・目的・自治体名で検索"><button type="submit">検索</button></form>
+          <div class="htools">
+            <button class="htool" type="button"><span class="ms" aria-hidden="true">location_on</span>地域: 全国<span class="ms" aria-hidden="true">arrow_drop_down</span></button>
+            <button class="htool" type="button"><span class="ms" aria-hidden="true">bookmark</span>保存リスト<span class="count" id="savecount">2</span></button>
+            <button class="htool main" type="button" data-go="diagnosis"><span class="ms" aria-hidden="true">account_circle</span>組合員ログイン</button>
+          </div>
+        </div></div>
+        <div class="gnav"><div class="inner">
+          <nav aria-label="サイトのメニュー" id="gnav">
+            <a href="#top" data-go="top" data-nav="top"><span class="ms" aria-hidden="true">home</span>ホーム</a>
+            <a href="#results" data-go="results" data-nav="results"><span class="ms" aria-hidden="true">search</span>制度を探す</a>
+            <a href="#diagnosis" data-go="diagnosis" data-nav="diagnosis"><span class="ms" aria-hidden="true">fact_check</span>かんたん診断</a>
+            <a href="#top" data-go="top" data-nav="cases"><span class="ms" aria-hidden="true">insights</span>活用事例</a>
+            <a href="#detail" data-go="detail" data-nav="detail"><span class="ms" aria-hidden="true">support_agent</span>専門家に相談</a>
+            <a href="#top" data-go="top" data-nav="guide"><span class="ms" aria-hidden="true">help_outline</span>ご利用ガイド</a>
+          </nav>
+          <div class="live"><span><b>●</b> 本日更新 14件 <span class="sample">【サンプル】</span></span></div>
+        </div></div>
+      </header>
+
+      <!-- TOP -->
+      <div data-screen="top" hidden>
+        <div class="notice"><div class="inner"><b>重要なお知らせ</b><span>2026-10-30</span><span>【サンプル】正社員化に関する助成金の受付が11月6日で締め切られます。</span></div></div>
+        <div class="inner">
+          <div class="crumb-row"><span><a href="#top">ホーム</a></span><span>最終情報同期: 2026-10-30 09:00</span></div>
+          <div class="banner">
+            <svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-dasharray="12 6" stroke-width="8"/><path d="M30 52L44 66L72 34" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/></svg>
+            <div>
+              <div class="row1"><span class="pill ok">組合員は無料</span><span>4つの質問・約1分</span></div>
+              <h2>自社に合う助成金・補助金を、無料で診断できます</h2>
+              <p>業種・従業員数・所在地・今後の予定を選ぶだけで、該当の可能性が高い制度と締切をまとめてご案内します。</p>
+            </div>
+            <a class="btn cta" href="#diagnosis" data-go="diagnosis">今すぐ診断を始める<span class="ms" aria-hidden="true">arrow_forward</span></a>
+          </div>
+          <div class="tiles">
+            <a class="tile main" href="#diagnosis" data-go="diagnosis"><span class="ti"><span class="ms" aria-hidden="true">fact_check</span></span><b>自社に合う制度を診断する</b><span class="s">4つの質問で候補がわかる</span></a>
+            <a class="tile" href="#results" data-go="results"><span class="ti"><span class="ms" aria-hidden="true">event</span></span><b>締切が近い制度を見る</b><span class="s">受付中の制度を締切順に表示</span></a>
+            <a class="tile" href="#results" data-go="results"><span class="ti"><span class="ms" aria-hidden="true">location_on</span></span><b>地域の制度を探す</b><span class="s">都道府県・市区町村から選ぶ</span></a>
+            <a class="tile" href="#results" data-go="results"><span class="ti"><span class="ms" aria-hidden="true">tune</span></span><b>目的・課題から探す</b><span class="s">採用、賃上げ、設備、IT導入など</span></a>
+            <a class="tile" href="#detail" data-go="detail"><span class="ti"><span class="ms" aria-hidden="true">support_agent</span></span><b>専門家に相談する</b><span class="s">社労士・行政書士をご紹介</span></a>
+          </div>
+          <section class="block"><div class="sec-head"><h3>締切が近い制度 <span class="sample">【サンプル】</span></h3><a class="more" href="#results" data-go="results">一覧を見る<span class="ms" aria-hidden="true">chevron_right</span></a></div><div class="grid3" id="topcards"></div></section>
+          <section class="block"><div class="sec-head"><h3>公募スケジュール <span class="sample">【サンプル】</span></h3><p>国が実施する主な制度の受付状況</p></div>
+            <div class="tablewrap"><table class="sched"><thead><tr><th>制度名</th><th>受付期間</th><th>状況</th><th>要点</th><th>公募元</th></tr></thead><tbody>
+              <tr><td>設備導入の補助金</td><td class="date">10/01 〜 11/03</td><td><span class="pill danger">締切間近</span></td><td>見積書2社分が必要</td><td><a href="#top">公募元ページ</a></td></tr>
+              <tr><td>正社員化の助成金</td><td class="date">通年</td><td><span class="pill ok">常時受付</span></td><td>事前の計画届が必要</td><td><a href="#top">公募元ページ</a></td></tr>
+              <tr><td>IT導入の補助金</td><td class="date">10/20 〜 11/11</td><td><span class="pill urgent">あと12日</span></td><td>登録済みのITツールが対象</td><td><a href="#top">公募元ページ</a></td></tr>
+              <tr><td>販路開拓の補助金</td><td class="date">12月下旬 開始予定</td><td><span class="pill info">予告</span></td><td>事前の計画作成を推奨</td><td><a href="#top">公募元ページ</a></td></tr>
+            </tbody></table></div></section>
+          <section class="block"><div class="sec-head"><h3>はじめての方へ: 活用までの3ステップ</h3></div>
+            <div class="steps3">
+              <div class="step"><span class="n">STEP 1</span><h4>知る</h4><ul><li>助成金と補助金の違い</li><li>よくある制度の種類</li></ul></div>
+              <div class="step"><span class="n">STEP 2</span><h4>見つける</h4><ul><li>無料診断で候補を出す</li><li>目的や地域から探す</li></ul></div>
+              <div class="step"><span class="n">STEP 3</span><h4>相談する</h4><ul><li>要件と必要書類を確認する</li><li>提携の社労士・行政書士へ相談</li></ul></div>
+            </div></section>
+          <section class="block"><div class="remind"><div class="l"><span class="ico"><span class="ms" aria-hidden="true">notifications_active</span></span><div><h4>締切の見逃しを防ぐ、お知らせ（機能イメージ）</h4><p>気になる制度を保存すると、締切の7日前と前日にメールでお知らせします。自社の業種に合う新着制度も週1回お届けします。</p></div></div>
+            <form ><input type="email" aria-label="メールアドレス" placeholder="メールアドレスを入力"><button class="btn" type="button">お知らせを受け取る</button></form></div></section>
+          <section class="block"><div class="two">
+            <div><div class="sec-head"><h3>最新情報</h3><a class="more" href="#top">一覧を見る<span class="ms" aria-hidden="true">chevron_right</span></a></div>
+              <div class="news">
+                <a href="#top"><time>2026-10-30</time><span class="tag kind">制度更新</span><span class="t">【サンプル】設備導入の補助金の公募要領が更新されました</span></a>
+                <a href="#top"><time>2026-10-28</time><span class="tag kind">新着</span><span class="t">【サンプル】IT導入の補助金の受付期間を掲載しました</span></a>
+                <a href="#top"><time>2026-10-24</time><span class="tag kind">お知らせ</span><span class="t">【サンプル】組合員向けの無料診断を開始しました</span></a>
+              </div></div>
+            <div><div class="sec-head"><h3>活用事例</h3><a class="more" href="#top">事例を探す<span class="ms" aria-hidden="true">chevron_right</span></a></div>
+              <div class="news">
+                <a href="#top"><time>事例</time><span class="tag org">建設業</span><span class="t">【サンプル】契約社員を正社員にして定着率が上がった</span></a>
+                <a href="#top"><time>事例</time><span class="tag org">製造業</span><span class="t">【サンプル】老朽設備を入れ替えて残業を減らした</span></a>
+                <a href="#top"><time>事例</time><span class="tag org">サービス業</span><span class="t">【サンプル】研修費用の助成で資格取得を進めた</span></a>
+              </div></div>
+          </div></section>
+          <section class="block"><div class="cta-band">
+            <div><h3>組合員の方は、無料診断で自社向けの制度と締切がわかります</h3><p>4つの質問に答えると、該当する可能性が高い制度をまとめた個別レポートが届きます。</p></div>
+            <a class="btn cta" href="#diagnosis" data-go="diagnosis">無料で診断する<span class="ms" aria-hidden="true">arrow_forward</span></a></div></section>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div data-screen="results"><div class="inner">
+        <div class="crumb-row"><span><a href="#top" data-go="top">ホーム</a> / <a href="#results" data-go="results">制度を探す</a> / <b style="color:var(--fg)">検索結果一覧</b></span><span>最終情報同期: 2026-10-30 09:00 ｜ 情報の出典: 各制度の公募元サイト</span></div>
+        <div class="banner" style="margin-bottom:20px">
+          <svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-dasharray="12 6" stroke-width="8"/><path d="M30 52L44 66L72 34" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/></svg>
+          <div><div class="row1"><span class="pill ok">組合員は無料</span><span>4つの質問・約1分</span></div>
+            <h2>自社に合う制度を、無料で診断できます</h2><p>業種・従業員数・予定を選ぶだけで、該当の可能性が高い制度を表示します。</p></div>
+          <a class="btn cta" href="#diagnosis" data-go="diagnosis">今すぐ診断を始める<span class="ms" aria-hidden="true">arrow_forward</span></a></div>
+        <div class="layout">
+          <div id="filter-slot"><aside class="filters" id="filters" aria-label="絞り込み条件">
+<div class="f-head"><span id="filter-title">絞り込み条件</span><button class="drawer-close btn soft" type="button" id="close-filter" aria-label="絞り込みを閉じる">閉じる ×</button><button type="button" data-reset>すべて解除</button></div>
+<p class="note">変更するとすぐ反映します。同じ項目内は「いずれか」に該当。</p>
+<fieldset class="fgroup"><legend>募集状況</legend><label><input type="checkbox" name="status" value="open">受付中</label><label><input type="checkbox" name="status" value="planned">予告・次回予定</label><label><input type="checkbox" name="status" value="year">通年受付</label></fieldset>
+<fieldset class="fgroup"><legend>目的・使いみち</legend><label><input type="checkbox" name="purpose" value="it">ITツール・DX導入</label><label><input type="checkbox" name="purpose" value="equipment">設備投資・省力化</label><label><input type="checkbox" name="purpose" value="employment">雇用・賃上げ</label><label><input type="checkbox" name="purpose" value="sales">販路開拓</label></fieldset>
+<fieldset class="fgroup"><legend>事業所の地域</legend><label for="region">所在地</label><select id="region"><option value="all">全国（地域を指定しない）</option><option value="tokyo">東京都</option><option value="other">東京都以外</option></select></fieldset>
+<fieldset class="fgroup"><legend>制度の種類</legend><label><input type="checkbox" name="kind" value="補助金">補助金</label><label><input type="checkbox" name="kind" value="助成金">助成金</label></fieldset>
+<p class="note">従業員数・上限額の条件は、制度詳細で確認できます。</p>
+<div class="drawer-footer"><button type="button" class="btn block" id="apply-filter">結果を見る（5件）</button></div>
+</aside></div>
+          <div class="rescol">
+            <div class="ctrl"><div class="cnt"><h2 id="results-heading" tabindex="-1">検索結果 <b id="result-count">5</b> 件</h2><span class="sample">【サンプル】</span></div><div class="opts"><label>並び順 <select id="sort-order"><option value="deadline">締切が近い順</option><option value="recent">最終確認が新しい順</option></select></label><button type="button" class="btn filter-trigger" id="open-filter" aria-haspopup="dialog" aria-controls="filter-dialog" aria-expanded="false">絞り込み <span id="filter-count">0</span></button></div></div>
+<div class="applied"><p>適用中の条件</p><div class="chips" id="active-chips"></div></div><p class="note" id="result-live" role="status" aria-live="polite" aria-atomic="true"></p>
+<div class="rescol" id="rescards"></div>
+            <section class="remind"><div class="l"><span class="ico"><span class="ms" aria-hidden="true">notifications_active</span></span><div><h4>締切の見逃しを防ぐ、お知らせ（機能イメージ）</h4><p>保存した制度の締切の7日前と前日にメールでお知らせします。</p></div></div><form ><input type="email" aria-label="メールアドレス" placeholder="メールアドレスを入力"><button class="btn" type="button">お知らせを受け取る</button></form></section>
+            <div class="pager"><span id="shown-count">サンプル全5件を表示</span><span>金額・期限・要件は表示例です</span></div>
+          </div>
+        </div>
+      </div></div>
+
+      <!-- DETAIL -->
+      <div data-screen="detail" hidden><div class="inner">
+        <div class="crumb-row"><span><a href="#top" data-go="top">ホーム</a> / <a href="#results" data-go="results">制度を探す</a> / <b style="color:var(--fg)">制度の詳細</b></span><span>最終確認: 2026-10-30</span></div>
+        <div class="detail">
+          <article class="main doc">
+            <div class="g-tags"><span class="tag org">厚生労働省(労働局)</span><span class="tag kind">助成金</span><span class="pill ok"><span class="ms" aria-hidden="true">all_inclusive</span>常時受付(通年)</span><span class="sample">【サンプル】</span></div>
+            <h2>非正規雇用の正社員化・賃上げに取り組む事業主向けの助成金</h2>
+            <p>有期契約やパートの従業員を正社員に転換した事業主、または賃金を引き上げた事業主に支給される助成金です。支給には個別の要件確認が必要です。</p>
+            <div class="facts">
+              <div class="fact"><small>支給額(1人あたり)</small><b>最大 ○○万円</b></div>
+              <div class="fact"><small>対象</small><b>雇用保険適用事業所の事業主</b></div>
+              <div class="fact"><small>受付</small><b>通年(事前の計画届が必要)</b></div>
+            </div>
+            <h3><span class="ms" aria-hidden="true">rule</span>主な要件</h3><ul><li>転換前の雇用期間が一定以上であること</li><li>転換後の賃金が一定割合以上増えていること</li><li>就業規則に転換制度を定めていること</li></ul>
+            <h3><span class="ms" aria-hidden="true">description</span>必要になる書類(例)</h3><ul><li>就業規則(転換制度の記載があるもの)</li><li>賃金台帳・出勤簿</li><li>雇用契約書(転換前後)</li></ul>
+            <h3><span class="ms" aria-hidden="true">apartment</span>申請先</h3><p>管轄の都道府県労働局です。所管は厚生労働省です。</p>
+            <p class="note" style="margin-top:14px">上記は公募元情報の要約です。要件・金額・期限は変更されることがあります。申請前に必ず公募元の公募要領で確認してください。</p>
+          </article>
+          <aside class="aside">
+            <div class="panel tint"><h4><span class="ms" aria-hidden="true">fact_check</span>自社が該当するか確認する</h4><p class="note">4つの質問で、該当の可能性を目安として表示します。</p><a class="btn soft block" href="#diagnosis" data-go="diagnosis">無料診断へ</a></div>
+            <div class="panel"><h4><span class="ms" aria-hidden="true">support_agent</span>申請を相談したい方へ</h4><p class="note">雇用関係の助成金は、提携する社会保険労務士が申請書類の作成・提出を行います。</p><button class="btn cta block" type="button" data-consult>社労士・行政書士に相談する</button><p class="note">費用は相談先との直接契約になります。</p></div>
+            <div class="panel"><h4><span class="ms" aria-hidden="true">verified</span>出典と確認日</h4>
+              <dl><dt>出典</dt><dd><a href="#detail">所管機関の公募元ページ</a></dd><dt>取得</dt><dd>2026-10-30 06:00</dd><dt>最終確認</dt><dd>2026-10-30</dd><dt>要約</dt><dd>サンプルのため未取得・未確認</dd></dl></div>
+            <button class="save" type="button" aria-pressed="false" style="justify-content:center"><span class="ms" aria-hidden="true">bookmark_border</span><span>この制度を保存する</span></button>
+          </aside>
+        </div>
+      </div></div>
+
+      <!-- DIAGNOSIS -->
+      <div data-screen="diagnosis" hidden><div class="inner">
+        <div class="crumb-row"><span><a href="#top" data-go="top">ホーム</a> / <b style="color:var(--fg)">組合員向け無料診断</b></span><span>入力内容は制度のご案内にのみ使用します</span></div>
+        <div class="wizard"><div class="progress" id="progress"></div><div id="stage"></div></div>
+      </div></div>
+
+      <footer class="site-foot"><div class="inner">
+        <div class="fcols">
+          <div><b>サイト名(仮)</b>各制度の公募元サイトの内容を要約し、出典と確認日を付けて掲載しています。受給や採択を保証するものではありません。</div>
+          <div><b>制度を探す</b><a href="#results" data-go="results">助成金・補助金の一覧</a><a href="#results" data-go="results">目的・課題から探す</a><a href="#results" data-go="results">地域から探す</a></div>
+          <div><b>相談・診断</b><a href="#diagnosis" data-go="diagnosis">かんたん診断</a><a href="#detail" data-go="detail">専門家に相談する</a><a href="#top" data-go="top">用語集</a></div>
+          <div><b>利用案内</b><a href="#top" data-go="top">利用規約・免責事項</a><a href="#top" data-go="top">プライバシーポリシー</a><a href="#top" data-go="top">お問い合わせ</a></div>
+        </div>
+        <div class="legal"><p>申請書類の作成・提出は、提携する社会保険労務士・行政書士が行います。当サイトは制度の情報提供と専門家の紹介を行います。申込前に、必ず各制度の公募元の公募要領をご確認ください。</p><p>運営: 株式会社メック</p></div>
+      </div></footer>
+    </div>
+  </div>
+
+  <dialog id="filter-dialog" class="dialog" aria-labelledby="filter-title"></dialog>
+<dialog id="info-dialog" class="dialog" aria-labelledby="info-title"><h2 id="info-title">機能イメージ</h2><p id="info-message"></p><form method="dialog"><button class="btn soft" type="button" id="close-info">閉じる</button></form></dialog>
+<section class="notes" id="notes" aria-live="polite"></section>
+</div>
+
+<script>
+
+(function () {
+'use strict';
+  var D = [
+    { org: '経済産業省・中小企業庁', kind: '補助金', tag: '通年・複数回', pill: ['urgent', 'schedule', '締切まで あと12日'], title: 'ITツール・クラウドの導入費用を支援する補助金',
+      sum: '業務の効率化や制度対応のための、ITツール・クラウドソフトの導入費用を支援します。',
+      m: [['上限額', '最大 ○○○', '万円', '枠により異なる'], ['補助率', '最大 ○/○', '', '', 'ok'], ['対象事業者', '中小企業・小規模事業者・個人事業主'], ['対象経費', 'ソフト・クラウド利用料・ハード購入']],
+      tags: ['会計・受発注ソフト', 'クラウド月額利用料', 'タブレット端末'], when: ['event_available', '次回締切: ', '2026-11-11 17:00', '(第○次)'], src: '事務局サイト', fetched: '2026-10-30', verified: '2026-10-29', act2: ['fact_check', '該当の可能性を診断'], main: '詳細を見る' },
+    { org: '経済産業省・中小企業庁', kind: '補助金', tag: '大型投資', pill: ['danger', 'alarm', '締切間近: あと4日'], title: '生産設備・省力化機器の導入を支援する補助金',
+      sum: '新しい設備やロボットの導入による、生産性の向上と賃上げの取り組みを支援します。',
+      m: [['上限額', '最大 ○,○○○', '万円', '賃上げ特例で上乗せあり', 'hl'], ['補助率', '○/○ 〜 ○/○', '', '企業規模により異なる', 'ok'], ['対象目的', '設備導入・工場の自動化'], ['主な要件', '給与総額の増加が必須', '', '', 'hl']],
+      tags: ['工作機械', '協働ロボット・IoT機器', '省力化ライン'], when: ['priority_high', '電子申請の締切: ', '2026-11-03 17:00', '(厳守)', 'red'], src: '事務局サイト', fetched: '2026-10-30', verified: '2026-10-30', act2: ['checklist', '要件チェックリスト'], main: '詳細・公募要領を確認' },
+    { org: '商工会議所・商工会', kind: '補助金', tag: '小規模事業者向け', pill: ['info', 'upcoming', '次回公募 予告中'], title: '販路開拓・広告宣伝の経費を支援する補助金(小規模事業者向け)',
+      sum: '店舗の改装、ホームページ作成、広告、新商品の開発など、幅広い経費を支援します。',
+      m: [['上限額', '○○ 〜 ○○○', '万円', '特例で上乗せあり'], ['補助率', '○/○', '', '', 'ok'], ['対象規模', '従業員 ○名以下(業種により異なる)'], ['申請の流れ', '事業計画書の作成が必要']],
+      tags: ['店舗改装', 'チラシ・看板・展示会', 'WEB広告・ECサイト'], when: ['calendar_month', '予定時期: ', '2026年12月下旬', ' 受付開始の見込み'], src: '事務局サイト', fetched: '2026-10-30', verified: '2026-10-28', act2: ['notifications_none', '公募通知メールを予約'], main: '詳細を見る' },
+    { org: '厚生労働省(労働局)', kind: '助成金', tag: '雇用', pill: ['ok', 'all_inclusive', '常時受付中(通年)'], title: '非正規雇用の正社員化・賃上げに取り組む事業主向けの助成金',
+      sum: '有期契約やパートの従業員を正社員に転換した事業主、または賃金を引き上げた事業主を対象とする制度例です。',
+      m: [['支給額(1人あたり)', '最大 ○○', '万円', '1事業所の年度上限あり'], ['支給の性質', '個別の支給要件を確認', '', '競争審査なし', 'ok'], ['対象労働者', '一定期間勤務した有期・パート従業員'], ['事前手続き', '計画届の事前提出が必要']],
+      tags: ['正社員転換', '賃金の引上げ', '社会保険の適用'], when: ['check_circle', '通年で申請可能 ', '', '(計画届の提出後に申請)'], src: '所管機関サイト', fetched: '2026-10-30', verified: '2026-10-30', act2: ['support_agent', '社労士に相談'], main: '詳細を見る' },
+    { org: '東京都・東京都中小企業振興公社', kind: '助成金', tag: '都内事業者限定', pill: ['plain', 'edit_calendar', '第2回 受付中'], title: '都内中小企業のデジタル機器導入を支援する助成金',
+      sum: '都内に主たる事業所を置く中小企業の、パソコンやタブレットの購入、テレワーク環境の整備を支援します。',
+      m: [['助成限度額', '○○○', '万円', '下限額: ○○万円'], ['助成率', '○/○ 以内', ''], ['対象地域', '都内に登記し、実際に事業を行う事業所'], ['ハード購入', 'パソコン・タブレット本体も対象']],
+      tags: ['パソコン・タブレット', 'クラウドの設定費用', '電子申請'], when: ['event_available', '申請受付期間: ', '2026-12-15 17:00まで', ''], src: '自治体サイト', fetched: '2026-10-30', verified: '2026-10-27', act2: null, main: '詳細を見る' }
+  ];
+
+var $=function(s){return document.querySelector(s)}, $$=function(s){return Array.from(document.querySelectorAll(s))};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var saved={}, keyword='', savedOnly=false, selected=0, step=0, answers=[[],[],[],[]];
+var statuses=['open','open','planned','year','open'], purposes=['it','equipment','sales','employment','it'];
+var targets=['中小企業・小規模事業者・個人事業主','生産設備を導入する中小企業','小規模事業者（従業員 ○名以下）','有期・パート従業員を雇用する事業主','東京都内で事業を行う中小企業'];
+var deadlines=['2026-11-11 17:00','2026-11-03 17:00','2026年12月下旬 募集予定','通年（事前手続きあり）','2026-12-15 17:00'];
+var due=['2026-11-11','2026-11-03','9999-01-01','9999-12-31','2026-12-15'];
+var statusLabels={open:'受付中',planned:'予告',year:'通年受付'};
+D.forEach(function(d,i){d.target=targets[i];d.status=statuses[i];d.purpose=purposes[i];d.deadline=deadlines[i];d.rate=i===3?'定額（補助率なし）':d.m[1][1];});
+D[3].sum='有期・パート従業員の正社員化や賃上げに取り組む事業主向けの制度例です。';
+
+function refreshIcons(){var paths={search:'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0',home:'M3 10l9-7 9 7M5 9v12h5v-7h4v7h5V9',bookmark:'M6 3h12v18l-6-4-6 4z',bookmark_border:'M6 3h12v18l-6-4-6 4z',arrow_forward:'M4 12h16M14 6l6 6-6 6',chevron_right:'M9 5l7 7-7 7',arrow_drop_down:'M6 9l6 6 6-6',location_on:'M12 22s8-9 8-14a8 8 0 0 0-16 0c0 5 8 14 8 14zM15 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0',account_circle:'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0M15 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0M5 19c1-7 13-7 14 0',fact_check:'M4 3h16v18H4zM7 8l2 2 4-4M7 16h10',support_agent:'M4 14v-3a8 8 0 0 1 16 0v3M4 12H2v6h4v-6zM20 12h2v6h-4v-6zM20 18v3h-7',help_outline:'M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0M9 8c0-4 7-3 6 0 0 2-3 2-3 5M12 17v1',insights:'M3 19l6-7 4 3 8-12M16 3h5v5',event:'M3 5h18v16H3zM3 10h18M7 2v6M17 2v6',notifications_active:'M5 17h14l-2-4V8a5 5 0 0 0-10 0v5zM10 21h4',tune:'M4 3v18M12 3v18M20 3v18M1 8h6M9 16h6M17 8h6',cloud_off:'M3 3l18 18M6 17a5 5 0 0 1-1-10M9 5a7 7 0 0 1 11 7c4 1 3 6-1 6M5 18h8',search_off:'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0M7 7l6 6M13 7l-6 6'};$$('.ms').forEach(function(el){var name=el.textContent.trim();if(!name)return;el.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="'+(paths[name]||'M4 4h16v16H4zM7 12l3 3 7-7')+'"/></svg>';});}
+function source(d){return '<div class="g-src"><span>出典: '+esc(d.src)+'【サンプル・未取得】</span><span>取得日: '+d.fetched+'（例）</span><span>最終確認日: '+d.verified+'（例）</span></div>';}
+function metrics(d){return '<dl class="metrics"><div><dt>01 対象事業者</dt><dd>'+d.target+'</dd></div><div><dt>02 上限額・支給額</dt><dd class="amount">'+d.m[0][1].replace('最大 ', '<span class="amount-prefix">最大</span>')+'<span class="amount-unit">万円</span></dd></div><div><dt>補助率・支給方式</dt><dd>'+d.rate+'</dd></div><div class="deadline-box"><dt>03 締切・受付時期</dt><dd class="deadline">'+d.deadline+'</dd></div></dl>';}
+function card(d,i,mini){return '<article class="gcard'+(mini?' mini':'')+'"><div class="g-top"><span class="tag kind">'+d.kind+'</span><span class="tag">'+statusLabels[d.status]+'</span><span class="sample">【サンプル】</span></div><h3>'+d.title+'</h3>'+metrics(d)+'<details><summary>対象経費・補足を見る</summary><p>'+d.sum+'</p><div class="g-tags">'+d.tags.map(function(t){return '<span class="tag">'+t+'</span>'}).join('')+'</div><p>上限額は受け取れる金額の保証ではありません。対象経費・要件・事前手続きを確認してください。</p></details>'+source(d)+'<div class="g-act"><button class="save" type="button" data-save="'+i+'" aria-pressed="'+!!saved[i]+'" aria-label="'+d.title+'を'+(saved[i]?'保存から外す':'保存する')+'"><span class="ms" aria-hidden="true">'+(saved[i]?'bookmark':'bookmark_border')+'</span>'+(saved[i]?'保存済み':'保存')+'</button><a class="card-link" href="#detail" data-detail="'+i+'">対象条件を確認 <span aria-hidden="true">→</span></a></div></article>';}
+var glossary='<details class="glossary"><summary>はじめての方へ：助成金・補助金・補助率とは？</summary><p><b>助成金・補助金：</b>名称だけでは支給条件を判断できません。要件確認を中心とする制度や、審査・採択を伴う制度などがあり、制度ごとの公募要領で確認します。</p><p><b>補助率：</b>対象経費のうち支援の対象となる割合です。「対象経費 × 補助率」と上限額の両方で支援額が制限されます。費用の全額が対象とは限りません。</p><p><b>上限額：</b>支援額の最大枠です。自社が受け取れる金額を示すものではありません。</p></details>';
+$('[data-screen="results"] .layout').insertAdjacentHTML('beforebegin',glossary);
+$('[data-screen="top"] .tiles').insertAdjacentHTML('afterend',glossary);
+function activeInputs(){return $$('#filters input:checked');}
+function filtered(){var checked=activeInputs(), region=$('#region').value;return D.map(function(d,i){return {d:d,i:i}}).filter(function(x){return ['status','purpose','kind'].every(function(group){var a=checked.filter(function(c){return c.name===group}).map(function(c){return c.value});return !a.length||a.includes(x.d[group]);})&&(region!=='other'||x.i!==4)&&(!keyword||(x.d.title+x.d.sum+x.d.org+x.d.tags.join(' ')).toLowerCase().includes(keyword.toLowerCase()))&&(!savedOnly||saved[x.i]);}).sort(function(a,b){return $('#sort-order').value==='recent'?b.d.verified.localeCompare(a.d.verified):due[a.i].localeCompare(due[b.i]);});}
+function renderChips(){var chips=activeInputs().map(function(c){return {key:c.name+':'+c.value,label:c.parentElement.textContent.trim()}});if($('#region').value!=='all')chips.push({key:'region',label:$('#region').selectedOptions[0].textContent});if(keyword)chips.push({key:'keyword',label:'検索: '+keyword});if(savedOnly)chips.push({key:'saved',label:'保存した制度'});$('#active-chips').innerHTML=chips.length?chips.map(function(c){return '<span class="chip">'+esc(c.label)+'<button type="button" data-remove="'+esc(c.key)+'" aria-label="'+esc(c.label)+'の条件を外す">×</button></span>'}).join(''):'<span class="note">指定なし・すべてのサンプルを表示</span>';$('#filter-count').textContent=chips.length;}
+function renderResults(){var items=filtered(), mode=$('#demo-state').value;if(mode==='empty')items=[];renderChips();$('#result-count').textContent=mode==='error'?'—':items.length;$('#apply-filter').textContent=mode==='error'?'結果の取得状況を見る':'結果を見る（'+items.length+'件）';$('#result-live').textContent=mode==='error'?'検索結果を取得できませんでした。条件は保持しています。':items.length+'件のサンプルが該当します。';$('#shown-count').textContent=mode==='error'?'取得エラーの表示例':'表示中: '+items.length+'件 / サンプル全5件';var content=items.map(function(x){return card(x.d,x.i,false)}).join('');if(mode==='error')content='<section class="empty" role="alert"><span class="ms" aria-hidden="true">cloud_off</span><h3>制度の情報を読み込めませんでした</h3><p>選んだ条件はそのまま残っています。もう一度お試しください。</p><button class="btn cta" type="button" data-retry>もう一度読み込む</button><p class="note">【サンプル】再試行すると通常表示に戻ります。</p></section>';else if(!items.length)content='<section class="empty"><span class="ms" aria-hidden="true">search_off</span><h3>条件に合う制度が見つかりません</h3><p>「受付中」だけでなく予告も含める、地域や目的の条件を外すと、候補が広がります。</p><button class="btn cta" type="button" data-reset>条件を解除して探し直す</button><p class="note">診断から該当の可能性を確認することもできます。</p><a class="card-link" href="#diagnosis" data-go="diagnosis">かんたん診断へ →</a></section>';$('#rescards').innerHTML=content;$('#savecount').textContent=Object.keys(saved).filter(function(k){return saved[k]}).length;refreshIcons();}
+function renderTop(){$('#topcards').innerHTML=[1,0,3].map(function(i){return card(D[i],i,true)}).join('');refreshIcons();}
+function reset(){ $$('#filters input').forEach(function(c){c.checked=false});$('#region').value='all';keyword='';savedOnly=false;$('.hsearch input').value='';$('#demo-state').value='normal';renderResults();}
+function detail(i){selected=i;var d=D[i];$('.detail .main').innerHTML='<a class="card-link" href="#results" data-go="results">← 検索結果に戻る</a><div class="g-tags"><span class="tag kind">'+d.kind+'</span><span class="tag">'+statusLabels[d.status]+'</span><span class="sample">【サンプル】</span></div><h2 tabindex="-1">'+d.title+'</h2><p>'+d.sum+'</p>'+metrics(d)+'<h3>自社で確認すること</h3><ul><li>対象事業者：'+d.target+'</li><li>対象経費：'+d.tags.join('・')+'</li><li>契約・発注前の手続きが必要か、公募要領で確認</li><li>併用制限や審査・支給条件を確認</li></ul><h3>相談前に用意するもの（例）</h3><ul><li>予定している取り組みと実施時期</li><li>会社の規模・所在地・業種</li><li>対象経費の見積もりや雇用状況の資料</li></ul>'+glossary+source(d)+'<p class="note">この画面は実在の制度を示しません。申請時は公募元の公募要領で最新の要件・期限を確認してください。</p>';var dl=$('.detail .aside dl');dl.innerHTML='<dt>出典</dt><dd>'+d.src+'【サンプル・未取得】</dd><dt>取得日</dt><dd>'+d.fetched+'（例）</dd><dt>最終確認日</dt><dd>'+d.verified+'（例）</dd>';var save=$('.detail .save');save.dataset.save=i;save.setAttribute('aria-pressed',!!saved[i]);save.innerHTML=(saved[i]?'保存済み':'この制度を保存する');}
+var notes={results:['対象事業者 → 上限額 → 締切の順に確認。4指標の位置を全カードで統一し、対象経費は必要な時だけ開く。','チェック変更を即座に件数へ反映。結果上のチップから解除でき、スマホは専用ドロワーで条件を選ぶ。','一覧では検索を主操作にし、カードは保存と対象条件の確認だけに絞った。0件・取得エラーはビューアから再現できる。'],top:['主操作は最上部の無料診断。その他の入口は控えめなタイルにして選択を助ける。','用語説明を折りたたんで用意。スケジュールはスマホで縦に並べる。'],detail:['選んだ制度と同じ内容・出典を表示し、一覧との食い違いを防ぐ。','主操作は社労士・行政書士への相談。無料診断と保存は副操作。相談は案内表示までで送信しない。'],diagnosis:['未選択で先に進めない設計。戻っても回答を保持し、質問の進み具合を伝える。','結果は該当の可能性を確認する候補。実判定・受給保証をせず、選んだ予定に対応するサンプルを表示する。']};
+function show(view,focus){if(!notes[view])view='results';$$('[data-screen]').forEach(function(s){s.hidden=s.dataset.screen!==view});$$('#screens button').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.view===view)});$$('#gnav a').forEach(function(a){if(a.dataset.nav===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});$('#urlbar').textContent='https://(サイト名・ドメイン未定)/'+({results:'search',top:'',detail:'programs/sample-'+selected,diagnosis:'member/diagnosis'})[view];$('#notes').innerHTML='<section><h2>この画面の設計意図</h2><ul>'+notes[view].map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul></section><section><h2>確認ポイント</h2><ul><li>5件の架空データ。日付は例で、情報の取得・実判定・送信は行いません。</li><li>案A/B・ライト/ダーク・390px幅・キーボード操作を想定。</li><li>参考：必要時だけ詳細を開く設計と44px以上の操作領域。</li></ul><p><a href="https://www.nngroup.com/articles/progressive-disclosure/" target="_blank" rel="noopener noreferrer">NN/g：段階的な情報開示</a> / <a href="https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html" target="_blank" rel="noopener noreferrer">W3C：操作領域</a></p></section>';if(view==='diagnosis')renderWizard(false);if(view==='detail')detail(selected);$('.hsearch button').classList.toggle('search-primary',view==='results');document.documentElement.dataset.view=view;$('.skip').href=view==='results'?'#results-heading':'#screens';$('.skip').textContent=view==='results'?'検索結果へ移動':'画面切替へ移動';try{history.replaceState(null,'','#'+view)}catch(e){}if(focus){var heading=$('[data-screen="'+view+'"] h2, [data-screen="'+view+'"] h3');if(heading){heading.tabIndex=-1;heading.focus();}window.scrollTo(0,0);}}
+function info(message){$('#info-message').textContent=message;$('#info-dialog').showModal();}
+var Q=[{t:'業種を教えてください',o:['建設業','製造業','サービス業','小売・卸売','その他']},{t:'従業員は何人ですか',o:['5人以下','6〜20人','21〜100人','101人以上']},{t:'事業所はどこにありますか',o:['東京都','大阪府','愛知県','その他の都道府県']},{t:'1年以内に予定していることは？',multi:true,o:['採用・正社員化','賃上げ','設備の購入','従業員の研修','システム・IT導入']}];
+function renderWizard(focus){var stage=$('#stage');$('#progress').innerHTML='<span>'+(step===4?'回答完了':'質問 '+(step+1)+' / 4')+'</span><div class="track" role="progressbar" aria-label="診断の進み具合" aria-valuemin="0" aria-valuemax="4" aria-valuenow="'+step+'"><div class="fill" style="width:'+(step/4*100)+'%"></div></div>';if(step===4){var ids=[];if(answers[3].some(function(x){return x===0||x===1}))ids.push(3);if(answers[3].includes(2))ids.push(1);if(answers[3].includes(4))ids.push(0);stage.innerHTML='<div class="result"><h3 tabindex="-1">該当の可能性を確認する候補</h3><span class="sample">【サンプル】実際の診断ではありません</span><p class="result-summary">'+answers.map(function(a,i){return a.map(function(v){return Q[i].o[v]}).join('・')}).join(' / ')+'</p><p class="note">予定に対応する制度例です。業種・人数・所在地による実際の該当判定は行っていません。</p>'+(ids.length?ids.map(function(i){return card(D[i],i,true)}).join(''):'<p>研修に対応するサンプルはありません。検索結果から別の目的もご確認ください。</p>')+'<div class="nav-row"><button class="btn soft" type="button" id="again">回答をやり直す</button><a class="btn cta" href="#results" data-go="results">制度一覧で確認する</a></div></div>';$('#again').onclick=function(){step=0;answers=[[],[],[],[]];renderWizard(true)};}else{var q=Q[step];stage.innerHTML='<fieldset class="q" style="border:0;padding:0;margin:0"><legend id="question-heading" tabindex="-1">'+q.t+'</legend><p class="note">'+(q.multi?'当てはまるものをすべて':'当てはまるものを1つ')+'選んでください。</p><div class="choices">'+q.o.map(function(o,i){return '<label class="choice"><input type="'+(q.multi?'checkbox':'radio')+'" name="answer" value="'+i+'" '+(answers[step].includes(i)?'checked':'')+'><span>'+o+'</span></label>'}).join('')+'</div></fieldset><div class="nav-row" style="margin-top:22px"><button class="btn soft" type="button" id="back" '+(step===0?'disabled':'')+'>戻る</button><button class="btn cta" type="button" id="next" '+(!answers[step].length?'disabled':'')+'>'+(step===3?'候補を見る':'次へ')+'</button></div>';stage.querySelectorAll('input').forEach(function(c){c.onchange=function(){answers[step]=Array.from(stage.querySelectorAll('input:checked')).map(function(v){return +v.value});$('#next').disabled=!answers[step].length}});$('#back').onclick=function(){step--;renderWizard(true)};$('#next').onclick=function(){step++;renderWizard(true)};}refreshIcons();if(focus){var heading=stage.querySelector('legend,h3');heading.focus();}}
+var drawer=$('#filter-dialog'),trigger=$('#open-filter');function closeDrawer(){if(drawer.open)drawer.close();}function restoreDrawer(){$('#filter-slot').append($('#filters'));trigger.setAttribute('aria-expanded','false');document.body.style.overflow='';trigger.focus();}trigger.onclick=function(){drawer.append($('#filters'));drawer.showModal();trigger.setAttribute('aria-expanded','true');document.body.style.overflow='hidden';$('#close-filter').focus();};$('#close-filter').onclick=closeDrawer;$('#apply-filter').onclick=closeDrawer;drawer.addEventListener('close',restoreDrawer);drawer.addEventListener('click',function(e){if(e.target===drawer){var r=drawer.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeDrawer();}});matchMedia('(min-width:981px)').addEventListener('change',function(e){if(e.matches)closeDrawer()});
+$('#filters').addEventListener('change',renderResults);$('#sort-order').onchange=renderResults;
+$('#demo-state').onchange=function(){renderResults();show('results',false)};
+$('#theme-mode').onchange=function(){if(this.value==='auto')document.documentElement.removeAttribute('data-theme');else document.documentElement.dataset.theme=this.value};
+$('#screens').onclick=function(e){var b=e.target.closest('button');if(b)show(b.dataset.view,false)};
+$('#plans').onclick=function(e){var b=e.target.closest('button');if(b){document.documentElement.dataset.plan=b.dataset.plan;$$('#plans button').forEach(function(x){x.setAttribute('aria-pressed',x===b)})}};
+$('.hsearch input').addEventListener('input',function(){keyword=this.value.trim();renderResults()});
+$$('form').forEach(function(form){form.addEventListener('submit',function(e){e.preventDefault();if(form.classList.contains('hsearch')){keyword=form.querySelector('input').value.trim();$('#demo-state').value='normal';renderResults();show('results',true);}else if(form.closest('#info-dialog'))$('#info-dialog').close();else info('【サンプル】通知登録の画面イメージです。メールアドレスは保存・送信されません。');})});
+$$('.remind form').forEach(function(f){f.querySelector('button').type='submit';f.querySelector('input').required=true;f.querySelector('button').classList.add('soft');});
+$('#close-info').onclick=function(){$('#info-dialog').close()};
+$$('.htools button')[0].onclick=function(){show('results',true);if(matchMedia('(max-width:980px)').matches)trigger.click();else $('#region').focus()};
+$$('.htools button')[1].onclick=function(){savedOnly=!savedOnly;$('#demo-state').value='normal';renderResults();show('results',true)};
+$$('.htools button')[2].innerHTML='<span class="ms" aria-hidden="true">account_circle</span>組合員の診断';
+document.addEventListener('click',function(e){var b=e.target.closest('[data-detail],[data-go],[data-save],[data-reset],[data-remove],[data-retry],[data-consult]');if(!b)return;if(b.hasAttribute('data-detail')){e.preventDefault();selected=+b.dataset.detail;show('detail',true)}else if(b.hasAttribute('data-go')){e.preventDefault();show(b.dataset.go,true)}else if(b.hasAttribute('data-save')){var i=b.dataset.save;saved[i]=!saved[i];renderResults();renderTop();if(document.documentElement.dataset.view==='detail')detail(selected);if(document.documentElement.dataset.view==='diagnosis')renderWizard(false);var current=$('[data-screen="'+document.documentElement.dataset.view+'"] [data-save="'+i+'"]');if(current)current.focus();}else if(b.hasAttribute('data-reset')){reset();if(!drawer.open)$('#results-heading').focus();}else if(b.hasAttribute('data-retry')){$('#demo-state').value='normal';renderResults();$('#results-heading').focus();}else if(b.hasAttribute('data-consult'))info('【サンプル】相談受付は準備中です。提携の社労士・行政書士が申請書類の作成・提出を行います。費用・相談先・共有する情報を確認し、同意をいただいてから紹介します。この画面から情報は送信されません。');else{var key=b.dataset.remove;if(key==='keyword'){keyword='';$('.hsearch input').value='';}else if(key==='region')$('#region').value='all';else if(key==='saved')savedOnly=false;else activeInputs().forEach(function(c){if(c.name+':'+c.value===key)c.checked=false});renderResults();$('#results-heading').focus();}});
+document.documentElement.lang='ja';detail(0);renderTop();renderResults();show(location.hash.slice(1)||'results',false);refreshIcons();
+})();
+
+</script>
+
+</html>
